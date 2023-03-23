@@ -14,6 +14,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mFirstNameInput = findViewById(R.id.first_name_input);
-        //mFirstNameInput.setText("Testing nested layout");
+        mFirstNameInput.setText("Testing nested layout");
     }
 }
