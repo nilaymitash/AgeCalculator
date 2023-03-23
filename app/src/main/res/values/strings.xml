@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Age Calculator</string>
+    <string name="banner_text">Let\'s see how old you are!</string>
+    <string name="f_name_hint">First name</string>
+    <string name="l_name_hint">Last name</string>
+    <string name="dob_hint">Date of birth (mm/dd/yyyy)</string>
+    <string name="calculate_age">Calculate age</string>
+</resources>
