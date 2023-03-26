@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mDOBInput;
     private TextView mDOBValidationLabel;
     private Button mCalculateAgeBtn;
-    private static final String DATE_FORMAT = "MM/dd/yyyy";
+    private static final String DATE_FORMAT = "M/d/yyyy";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        //TODO: Refactor the logic
         private boolean isInputValid(String fName, String lName, String dob) {
             boolean valid = true;
             if(isBlank(fName)) {
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(),0);
 
+            //Current date - the date picker will be defaulted to this value
             Calendar cal = Calendar.getInstance();
             int day = cal.get(Calendar.DAY_OF_MONTH);
             int month = cal.get(Calendar.MONTH);
