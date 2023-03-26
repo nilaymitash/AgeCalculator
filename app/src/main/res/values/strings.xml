@@ -5,7 +5,7 @@
     <string name="l_name_hint">Enter your last name*</string>
     <string name="dob_hint">Enter your date of birth (mm/dd/yyyy)*</string>
     <string name="calculate_age">Calculate age</string>
-    <string name="f_name_validation_msg">First name is required</string>
-    <string name="l_name_validation_msg">Last name is required</string>
-    <string name="dob_validation_msg">Date of birth is required</string>
+    <string name="f_name_validation_msg">Please enter a valid first name</string>
+    <string name="l_name_validation_msg">Please enter a valid last name</string>
+    <string name="dob_validation_msg">Please enter a valid date of birth (mm/dd/yyyy)</string>
 </resources>

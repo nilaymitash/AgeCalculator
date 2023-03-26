@@ -1,10 +1,8 @@
 package com.example.agecalculator;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -13,14 +11,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,22 +47,30 @@ public class MainActivity extends AppCompatActivity {
 
         mCalculateAgeBtn = findViewById(R.id.calculate_btn);
 
-        mDOBInput.setInputType(InputType.TYPE_NULL); //stops the regular keyboard to load on click
-
-        mDOBInput.setOnClickListener(new AgeCalculatorListener());
+        mDOBInput.setOnTouchListener(new AgeCalculatorListener());
         mCalculateAgeBtn.setOnClickListener(new AgeCalculatorListener());
     }
 
-    public class AgeCalculatorListener implements View.OnClickListener {
+    public class AgeCalculatorListener implements View.OnClickListener, View.OnTouchListener {
 
         private DatePickerDialog datePickerDialog;
 
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
-                case R.id.dob_input: setSelectedDate(view); break;
                 case R.id.calculate_btn: calculateAge(); break;
+                default: break;
             }
+        }
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if(view.getId() == R.id.dob_input && motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                //show date picker dialog
+                setSelectedDate(view);
+                return true;
+            }
+            return false;
         }
 
         private void calculateAge() {
@@ -94,41 +100,46 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        //TODO: Refactor the logic
         private boolean isInputValid(String fName, String lName, String dob) {
-            boolean valid = true;
-            if(isBlank(fName)) {
-                valid = false;
-                //show fname validation message
-                mFirstNameValidationLabel.setVisibility(View.VISIBLE);
+            boolean validFName = validateName(fName, mFirstNameValidationLabel);
+            boolean validLName = validateName(lName, mLastNameValidationLabel);
+            boolean validDOB = validateDate(dob, mDOBValidationLabel);
+
+            return validFName && validLName && validDOB;
+        }
+
+        private boolean validateName(String name, View view) {
+            if(isBlank(name) || !isValidName(name)) {
+                view.setVisibility(View.VISIBLE);
+                return false;
             } else {
-                //clear fname validation message
-                mFirstNameValidationLabel.setVisibility(View.GONE);
+                view.setVisibility(View.GONE);
+                return true;
             }
-            if(isBlank(lName)) {
-                valid = false;
-                //show lname validation message
-                mLastNameValidationLabel.setVisibility(View.VISIBLE);
+        }
+        private boolean validateDate(String str, View view) {
+            if(isBlank(str)) {
+                view.setVisibility(View.VISIBLE);
+                return false;
             } else {
-                //clear lname validation message
-                mLastNameValidationLabel.setVisibility(View.GONE);
+                view.setVisibility(View.GONE);
+                return true;
             }
-            if(isBlank(dob)) {
-                valid = false;
-                //show lname validation message
-                mDOBValidationLabel.setVisibility(View.VISIBLE);
-            } else {
-                //clear dob validation message
-                mDOBValidationLabel.setVisibility(View.GONE);
-            }
-            return valid;
         }
 
         private boolean isBlank(String str) {
             return str == null || str.trim().isEmpty();
         }
 
+        private boolean isValidName(String str) {
+            String regex = "[a-zA-Z]+";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(str);
+            return m.matches();
+        }
+
         private void setSelectedDate(View view) {
+            System.out.println("Regular click invoked");
             //close regular keyboard if open
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(),0);
