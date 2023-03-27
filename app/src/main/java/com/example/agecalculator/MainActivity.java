@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
         mCalculateAgeBtn = findViewById(R.id.calculate_btn);
 
+        //Add touch listener to the input field because
+        //we need the date picker dialog to pop up on touch of DOB input
         mDOBInput.setOnTouchListener(new AgeCalculatorListener());
         mCalculateAgeBtn.setOnClickListener(new AgeCalculatorListener());
     }
@@ -66,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(view.getId() == R.id.dob_input && motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                //close regular keyboard if open
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(),0);
+
                 //show date picker dialog
                 setSelectedDate(view);
                 return true;
@@ -85,16 +91,10 @@ public class MainActivity extends AppCompatActivity {
 
                 //calculate age
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
-
-                LocalDate today = LocalDate.now(); // Today's date is 10th Jan 2022
+                LocalDate today = LocalDate.now();
                 LocalDate birthday = LocalDate.parse(dob, formatter);
 
                 Period p = Period.between(birthday, today);
-
-                // Now access the values as below
-                System.out.println(p.getDays());    //9
-                System.out.println(p.getMonths());  //0
-                System.out.println(p.getYears());   //42
 
                 Toast.makeText(MainActivity.this, "You are " + p.getYears() + " years old!", Toast.LENGTH_LONG).show();
             }
@@ -139,11 +139,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void setSelectedDate(View view) {
-            System.out.println("Regular click invoked");
-            //close regular keyboard if open
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(view.getApplicationWindowToken(),0);
-
             //Current date - the date picker will be defaulted to this value
             Calendar cal = Calendar.getInstance();
             int day = cal.get(Calendar.DAY_OF_MONTH);
